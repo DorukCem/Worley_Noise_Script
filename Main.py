@@ -6,29 +6,32 @@ import pygame.math
 
 WIDTH = 400
 HEIGHT = 400
+DEPTH = 50
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 BLACK = (0,0,0)
 WHITE = (255, 255, 255)
 
-random_points = [(random.randint(0, WIDTH),random.randint(0, HEIGHT)) for _ in range(100)]
+random_points = [(random.randint(0, WIDTH),random.randint(0, HEIGHT), random.randint(0, DEPTH)) for _ in range(20)]
 
 #------------ start
 pixel_array = pygame.PixelArray(screen)
 
 for x in range(WIDTH):
    for y in range(HEIGHT):
-      
-      min_dist = float("inf")
+      distances = []
       for p in random_points:
-         dist_sqr = (p[0] - x)**2 + (p[1] - y)**2
-         if dist_sqr < min_dist:
-            min_dist = dist_sqr
-      min_dist = math.sqrt(min_dist)
-      weight = min(1, min_dist/50)
+         dist = ((p[0] - x)**2 + (p[1] - y)**2 + p[2]**2)**(1/2)
+         distances.append(dist)
+
+      distances.sort()
       
-      color =  pygame.Color.lerp(pygame.Color(BLACK), pygame.Color(WHITE), weight)
+      r = min(1, distances[0]/130) * 255
+      g = min(1, distances[1]/130) * 255
+      b = min(1, distances[2]/130) * 255
+
+      color = (r,g,b)
 
       pixel_array[x, y] = color
 
